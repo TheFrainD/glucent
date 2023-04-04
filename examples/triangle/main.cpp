@@ -1,7 +1,7 @@
-#include <iostream>
-
-#include <glucent/glucent.h>
 #include <GLFW/glfw3.h>
+#include <glucent/glucent.h>
+
+#include <iostream>
 
 float vertices[] = {-1.0F, -1.0F, 1.0F, -1.0F, 0.0F, 1.0F};
 
@@ -30,12 +30,15 @@ int main() {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_FALSE);
 
-    GLFWwindow *window = glfwCreateWindow(640, 480, "TriangleExample", nullptr, nullptr);
+    GLFWwindow *window =
+        glfwCreateWindow(640, 480, "TriangleExample", nullptr, nullptr);
 
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1);
 
-    glctInit();
+    if (glctInit() != GLCT_OK) {
+        std::cerr << "GLCT failed to load!\n";
+    }
 
     int x, y;
     glfwGetFramebufferSize(window, &x, &y);
@@ -95,7 +98,7 @@ int main() {
     while (!glfwWindowShouldClose(window)) {
         glfwPollEvents();
 
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClearColor(0.0F, 0.0F, 0.0F, 1.0F);
         glClear(GL_COLOR_BUFFER_BIT);
 
         glUseProgram(program);
