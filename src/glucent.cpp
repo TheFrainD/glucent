@@ -1,4 +1,4 @@
-/* glucent.h is a part of glucent
+/* glucent.cpp is a part of glucent
  *
  * Copyright (c) 2023 Dmytro Zykov
  * 
@@ -21,26 +21,25 @@
  * SOFTWARE.
  */
 
-
-#ifndef GLUCENT_H
-#define GLUCENT_H
-
-#include "GL/gl.h"
+#include "glucent/glucent.h"
 
 namespace glucent
 {
 
-struct Dimensions {
-    GLint x;
-    GLint y;
-    GLsizei width;
-    GLsizei height;
-};
+static bool glucent_initialized {};
 
-void Initialize();
-
-void SetViewport(const Dimensions& dimensions);
-
+void Initialize() {
+    if (!glucent_initialized) {
+        glctInit();
+        glucent_initialized = true;
+    }
 }
 
-#endif // GLUCENT_H
+void SetViewport(const Dimensions& dimensions) {
+    if (!glucent_initialized) {
+        Initialize();
+    }
+    glViewport(dimensions.x, dimensions.y, dimensions.width, dimensions.height);
+}
+
+}

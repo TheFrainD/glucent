@@ -9,7 +9,7 @@ AlignOperands: 'true'
 AlignTrailingComments: 'true'
 AllowShortIfStatementsOnASingleLine: Never
 AllowShortLambdasOnASingleLine: Inline
-ColumnLimit: '120'
+ColumnLimit: '80'
 FixNamespaceComments: 'true'
 IndentWidth: '4'
 Language: Cpp
@@ -23,5 +23,3 @@ SpaceAfterTemplateKeyword: 'true'
 SpaceBeforeAssignmentOperators: 'true'
 SpaceBeforeCpp11BracedList: 'true'
 TabWidth: '4'
-
-...
