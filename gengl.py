@@ -130,7 +130,7 @@ static void *glctGetProcAddress(const char *name) {
 ''')
 
     for proc in procs:
-        file.write(f'PFN{proc.upper}PROC glct_{proc};\n')
+        file.write(f'PFN{proc.upper()}PROC glct_{proc};\n')
 
     file.write('''
 int glctInit() {
