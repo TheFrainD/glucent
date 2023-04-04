@@ -1,9 +1,7 @@
 #ifndef GLUCENT_H
 #define GLUCENT_H
 
-#ifndef __gl_h_
-#include <GL/gl.h>
-#endif
+#include "GL/gl.h"
 
 namespace glucent
 {

@@ -98,7 +98,8 @@ int glctInit();\n\n''')
 }
 #endif // __cplusplus
 
-#endif /* __glucent_gl_h_ */''')
+#endif /* __glucent_gl_h_ */
+''')
 
 with open('src/gl.c', 'wb') as file:
     write_to_file(file, f'/* gl.c is a part of glucent\n *\n{license}\n */\n\n')
@@ -156,8 +157,8 @@ static int glctLoadOpenGL() {
 #else
 		glctXGetProcAddress = (PFNGLXGETPROCADDRESSARB)dlsym(openGLLib, "glXGetProcAddressARB");
 		return glctXGetProcAddress != NULL;
-	}
 #endif
+    }
     return GLCT_ERROR;
 }
 
