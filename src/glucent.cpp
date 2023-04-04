@@ -1,60 +1,45 @@
-//#include <glucent/glucent.h>
-//
-//#include <string>
-//
-//#include <OpenGL/CGLTypes.h>
-//#include <dlfcn.h>
-//
-//static void *libgl;
-//
-//static int LoadOpenGL() {
-//    libgl = dlopen("/System/Library/Frameworks/OpenGL.framework/OpenGL", RTLD_LAZY | RTLD_LOCAL);
-//    if (libgl) return 1;
-//    return 0;
-//}
-//
-//static void CloseOpenGL() {
-//    if (libgl) {
-//        dlclose(libgl);
-//        libgl = nullptr;
-//    }
-//}
-//
-//static void *LoadFunction(const std::string& name) {
-//    return dlsym(libgl, name.c_str());
-//}
-//
-//namespace glucent
-//{
-//    std::function<void((GLint x, GLint y, GLsizei width, GLsizei height))> glViewport;
-//    std::function<void((GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha))> glClearColor;
-//    std::function<void(GLbitfield mask)> glClear;
-//    std::function<const GLubyte *(GLenum name)> glGetString;
-//
-//    int Init() {
-//        if (!LoadOpenGL()) {
-//            return 0;
-//        }
-//
-//        if (!(glViewport = (void(*)(GLint, GLint, GLsizei, GLsizei))LoadFunction("glViewport"))) {
-//            return 0;
-//        }
-//
-//        if (!(glClearColor = (void(*)(GLclampf, GLclampf, GLclampf, GLclampf))LoadFunction("glClearColor"))) {
-//            return 0;
-//        }
-//
-//        if (!(glClear = (void(*)(GLbitfield))LoadFunction("glClear"))) {
-//            return 0;
-//        }
-//
-//        if (!(glGetString = (const GLubyte *(*)(GLenum))LoadFunction("glGetString"))) {
-//            return 0;
-//        }
-//
-//        CloseOpenGL();
-//
-//        return 1;
-//    }
-//
-//}
+/* glucent.cpp is a part of glucent
+ *
+ * Copyright (c) 2023 Dmytro Zykov
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+#include "glucent/glucent.h"
+
+namespace glucent
+{
+
+static bool glucent_initialized {};
+
+void Initialize() {
+    if (!glucent_initialized) {
+        glctInit();
+        glucent_initialized = true;
+    }
+}
+
+void SetViewport(const Dimensions& dimensions) {
+    if (!glucent_initialized) {
+        Initialize();
+    }
+    glViewport(dimensions.x, dimensions.y, dimensions.width, dimensions.height);
+}
+
+}

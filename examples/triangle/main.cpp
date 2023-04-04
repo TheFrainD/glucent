@@ -36,13 +36,11 @@ int main() {
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1);
 
-    if (glctInit() != GLCT_OK) {
-        std::cerr << "GLCT failed to load!\n";
-    }
+    glucent::Initialize();
 
-    int x, y;
-    glfwGetFramebufferSize(window, &x, &y);
-    glViewport(0, 0, x, y);
+    glucent::Dimensions dm {0, 0, 0, 0};
+    glfwGetFramebufferSize(window, &dm.width, &dm.height);
+    glucent::SetViewport(dm);
 
     const GLuint vertex_shader {glCreateShader(GL_VERTEX_SHADER)};
     glShaderSource(vertex_shader, 1, &vertex_shader_source, nullptr);
