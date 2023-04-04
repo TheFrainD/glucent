@@ -9,7 +9,7 @@ list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-option(BUILD_SHARED_LIBS "Build shored libraries" OFF)  # Not suppoeted
+option(BUILD_SHARED_LIBS "Build shored libraries" OFF) # Not suppoeted
 option(GLUCENT_BUILD_EXAMPLES "Build glucent examples" ON)
 option(GLUCENT_BUILD_DOCS "Build glucent documentation" ON) # Not implemented
 option(GLUCENT_INSTALL "Generate installation target" ON) # Not implemented

@@ -23,6 +23,9 @@
 import re
 import argparse
 
+def write_to_file(file, string):
+    file.write(string.encode('utf-8'))
+
 extensions = ['arb', 'ext', 'khr', 'ovr', 'nv', 'amd', 'intel', 'mesa']
 
 parser = argparse.ArgumentParser(
@@ -64,9 +67,9 @@ with open('include/GL/glcorearb.h', 'r') as file:
         if is_enabled(proc):
             procs.append(proc)
 
-with open('include/GL/gl.h', 'w') as file:
-    file.write(f'/* gl.h is a part of glucent\n *\n{license}\n */\n\n')
-    file.write('''#ifndef __glucent_gl_h_
+with open('include/GL/gl.h', 'wb') as file:
+    write_to_file(file, f'/* gl.h is a part of glucent\n *\n{license}\n */\n\n')
+    write_to_file(file, '''#ifndef __glucent_gl_h_
 #define __glucent_gl_h_
 
 #include <GL/glcorearb.h>
@@ -87,101 +90,126 @@ typedef void *(*GLCTgetProcAddress)(const char *name);
 int glctInit();\n\n''')
 
     for proc in procs:
-        file.write(f'GLAPI PFN{proc.upper()}PROC glct_{proc};\n')
-        file.write(f'#define {proc} glct_{proc}\n')
+        write_to_file(file, f'GLAPI PFN{proc.upper()}PROC glct_{proc};\n')
+        write_to_file(file, f'#define {proc} glct_{proc}\n')
 
-    file.write('''
+    write_to_file(file, '''
 #ifdef __cplusplus
 }
 #endif // __cplusplus
 
 #endif /* __glucent_gl_h_ */''')
 
-with open('src/gl.c', 'w') as file:
-    file.write(f'/* gl.c is a part of glucent\n *\n{license}\n */\n\n')
-    file.write('''#include <GL/gl.h>
+with open('src/gl.c', 'wb') as file:
+    write_to_file(file, f'/* gl.c is a part of glucent\n *\n{license}\n */\n\n')
+    write_to_file(file, '''#include <GL/gl.h>
 
-#ifdef __APPLE__
-#include <dlfcn.h>
+#include <stdlib.h>
 
-static void *gl_lib;
-
-static int openGl() {
-    gl_lib = dlopen("/System/Library/Frameworks/OpenGL.framework/OpenGL", RTLD_LAZY | RTLD_LOCAL);
-    if (gl_lib) {
-        return GLCT_OK;
-    }
-    return GLCT_ERROR;
-}
-
-static void closeGl() {
-    if (gl_lib) {
-        dlclose(gl_lib);
-    }
-}
-
-static void *glctGetProcAddress(const char *name) {
-    return dlsym(gl_lib, name);
-}
-#endif
+static void *openGLLib = NULL;
 
 #ifdef _WIN32
 #include <windows.h>
 
-static HMODULE gl_lib;
 typedef PROC(__stdcall *PFNWGLGETPROCADDRESSPROC)(LPCSTR);
-static PFNWGLGETPROCADDRESSPROC glct_wglGetProcAddress;
-#define wglGetProcAddress glct_wglGetProcAddress
+static PFNWGLGETPROCADDRESSPROC glctWGLGetProcAddress = NULL;
 
-static int openGl() {
-	gl_lib = LoadLibraryW(L"opengl32.dll");
-	if (!gl_lib) {
+static int glctLoadOpenGL() {
+	openGLLib = LoadLibraryW(L"opengl32.dll");
+	if (openGLLib == NULL) {
 		return GLCT_ERROR;
 	}
 
-	glct_wglGetProcAddress = (PFNWGLGETPROCADDRESSPROC)GetProcAddress(gl_lib, "wglGetProcAddress");
-	if (!glct_wglGetProcAddress) {
+	glctWGLGetProcAddress = (PFNWGLGETPROCADDRESSPROC)GetProcAddress(openGLLib, "wglGetProcAddress");
+	if (glctWGLGetProcAddress == NULL) {
 		return GLCT_ERROR;
 	}
 
 	return GLCT_OK;
 }
 
-static void closeGl() {
-	if (gl_lib) {
-		FreeLibrary(gl_lib);
+static void glctFreeOpenGL() {
+	if (openGLLib) {
+		FreeLibrary(openGLLib);
 	}
 }
+#else
+#include <dlfcn.h>
+
+#ifndef __APPLE__
+typedef void *(*PFNGLXGETPROCADDRESSARB)(const GLubyte *);
+PFNGLXGETPROCADDRESSARB glctXGetProcAddress = NULL;
+#endif
+
+static int glctLoadOpenGL() {
+#ifdef __APPLE__
+    openGLLib = dlopen("/System/Library/Frameworks/OpenGL.framework/OpenGL", RTLD_LAZY | RTLD_LOCAL);
+#else
+	openGLLib = dlopen("libGL.so", RTLD_LAZY | RTLD_LOCAL);
+	if (openGLLib == NULL) {
+		openGLLib = dlopen("libGL.so.1", RTLD_LAZY | RTLD_LOCAL);
+	}
+#endif
+    if (openGLLib != NULL) {
+#ifdef __APPLE__
+        return GLCT_OK;
+#else
+		glctXGetProcAddress = (PFNGLXGETPROCADDRESSARB)dlsym(openGLLib, "glXGetProcAddressARB");
+		return glctXGetProcAddress != NULL;
+	}
+#endif
+    return GLCT_ERROR;
+}
+
+static void glctFreeOpenGL() {
+    if (openGLLib != NULL) {
+        dlclose(openGLLib);
+    }
+}
+
+#endif
 
 static void *glctGetProcAddress(const char *name) {
-    void *address = (void *)wglGetProcAddress(name);
-	if (!address) {
-		return (void *)GetProcAddress(gl_lib, name);
+	if (openGLLib == NULL) {
+		return NULL;
 	}
+	void *address = NULL;
+#ifdef _WIN32
+	address = (void *)glctWGLGetProcAddress(name);
+	if (!address) {
+		address = (void *)GetProcAddress(openGLLib, name);
+	}
+#else
+#ifndef __APPLE__
+	address = glctXGetProcAddress(name);
+#else
+    address = dlsym(openGLLib, name);
+#endif
+#endif
+
+	return address;
 }
-
-#endif // _WIN32
-
 
 #define GET_PROC(PROC) (glct_##PROC = glctGetProcAddress(#PROC))
 
 ''')
 
     for proc in procs:
-        file.write(f'PFN{proc.upper()}PROC glct_{proc};\n')
+        write_to_file(file, f'PFN{proc.upper()}PROC glct_{proc} = NULL;\n')
 
-    file.write('''
+    write_to_file(file, '''
 int glctInit() {
-    if (openGl() != GLCT_OK) {
+    if (glctLoadOpenGL() != GLCT_OK) {
         return GLCT_ERROR;
     }
-    ''')
+
+''')
 
     for proc in procs:
-        file.write(f'\tGET_PROC({proc});\n')
+        write_to_file(file, f'\tGET_PROC({proc});\n')
 
-    file.write('''
-    closeGl();
+    write_to_file(file, '''
+    glctFreeOpenGL();
     return GLCT_OK;
 }
 ''')

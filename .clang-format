@@ -12,7 +12,6 @@ AllowShortLambdasOnASingleLine: Inline
 ColumnLimit: '80'
 FixNamespaceComments: 'true'
 IndentWidth: '4'
-IndentExternBlock: "NoIndent"
 Language: Cpp
 NamespaceIndentation: None
 PointerAlignment: Right

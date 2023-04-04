@@ -7,8 +7,8 @@ set("${PROJECT_NAME}_SOURCES"
         gl.c glucent.cpp)
 
 add_library(${PROJECT_NAME} ${GLUCENT_LIBRARY_TYPE}
-    ${${PROJECT_NAME}_SOURCES}
-    ${${PROJECT_NAME}_HEADERS})
+        ${${PROJECT_NAME}_SOURCES}
+        ${${PROJECT_NAME}_HEADERS})
 
 target_include_directories(${PROJECT_NAME}
         PRIVATE
