@@ -125,6 +125,44 @@ static void *glctGetProcAddress(const char *name) {
 }
 #endif
 
+#ifdef _WIN32
+#include <windows.h>
+
+static HMODULE gl_lib;
+typedef PROC(__stdcall *PFNWGLGETPROCADDRESSPROC)(LPCSTR);
+static PFNWGLGETPROCADDRESSPROC glct_wglGetProcAddress;
+#define wglGetProcAddress glct_wglGetProcAddress
+
+static int openGl() {
+	gl_lib = LoadLibraryW(L"opengl32.dll");
+	if (!gl_lib) {
+		return GLCT_ERROR;
+	}
+
+	glct_wglGetProcAddress = (PFNWGLGETPROCADDRESSPROC)GetProcAddress(gl_lib, "wglGetProcAddress");
+	if (!glct_wglGetProcAddress) {
+		return GLCT_ERROR;
+	}
+
+	return GLCT_OK;
+}
+
+static void closeGl() {
+	if (gl_lib) {
+		FreeLibrary(gl_lib);
+	}
+}
+
+static void *glctGetProcAddress(const char *name) {
+    void *address = (void *)wglGetProcAddress(name);
+	if (!address) {
+		return (void *)GetProcAddress(gl_lib, name);
+	}
+}
+
+#endif // _WIN32
+
+
 #define GET_PROC(PROC) (glct_##PROC = glctGetProcAddress(#PROC))
 
 ''')
