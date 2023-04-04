@@ -1,6 +1,6 @@
 # gengl.py is a part of glucent
 #
-# Copyright (c) 2022 Dmytro Zykov
+# Copyright (c) 2023 Dmytro Zykov
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
