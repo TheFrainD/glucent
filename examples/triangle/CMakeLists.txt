@@ -1,3 +1,4 @@
 project(TriangleExample)
 add_executable(TriangleExample main.cpp)
+target_compile_definitions(TriangleExample PUBLIC GLFW_INCLUDE_NONE)
 target_link_libraries(TriangleExample glucent glfw)

@@ -1,17 +1,17 @@
 /* glucent.cpp is a part of glucent
  *
  * Copyright (c) 2023 Dmytro Zykov
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- * 
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,8 +23,7 @@
 
 #include "glucent/glucent.h"
 
-namespace glucent
-{
+namespace glucent {
 
 static bool glucent_initialized {};
 
@@ -42,4 +41,4 @@ void SetViewport(const Dimensions& dimensions) {
     glViewport(dimensions.x, dimensions.y, dimensions.width, dimensions.height);
 }
 
-}
+}  // namespace glucent

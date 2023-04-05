@@ -1,5 +1,7 @@
 # glucent
-glucent is a simple closs-platform OpenGL core profile loader and wrapper
+![build-passing](https://github.com/TheFrainD/glucent/tree/dev/actions/workflows/ci.yml/badge.svg) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/TheFrainD/glucent/blob/main/LICENSE)
+
+glucent is a simple cross-platform OpenGL core profile loader and wrapper
 
 ## Build
 #### Prerequisites
@@ -17,6 +19,8 @@ A python script `gengl.py` generates an OpenGL loader files that a necessary to 
 - amd
 - intel
 - mesa
+
+More about OpenGL extensions: https://www.khronos.org/opengl/wiki/OpenGL_Extension
 
 To generate loader with no extensions:
 ```
