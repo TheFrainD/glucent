@@ -1,5 +1,5 @@
 # glucent
-![build-passing](https://github.com/TheFrainD/glucent/tree/dev/actions/workflows/ci.yml/badge.svg) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/TheFrainD/glucent/blob/main/LICENSE)
+![build-passing](https://github.com/TheFrainD/glucent/actions/workflows/ci.yml/badge.svg) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/TheFrainD/glucent/blob/main/LICENSE)
 
 glucent is a simple cross-platform OpenGL core profile loader and wrapper
 
