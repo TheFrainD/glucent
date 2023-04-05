@@ -36,10 +36,15 @@ build/
 out/
 cmake-build-*/
 
-# project files
+# Project files
 .idea/
 .vs/
 
-# mac specific
+# Mac specific
 .DS_Store
 .cache/
+
+
+# Generated loader
+include/GL/gl.h
+src/gl.c
