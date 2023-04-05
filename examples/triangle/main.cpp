@@ -1,5 +1,5 @@
-#include <glucent/glucent.h>
 #include <GLFW/glfw3.h>
+#include <glucent/glucent.h>
 
 #include <iostream>
 

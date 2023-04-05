@@ -1,0 +1,89 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    name: ${{ matrix.platform.name }}
+    runs-on: ${{ matrix.platform.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+          - {
+              name: "Windows MSVC",
+              os: "windows-2022",
+              flags: "-A x64"
+          }
+          - {
+              name: "Windows Clang",
+              os: "windows-2022",
+              flags: "-DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -GNinja"
+          }
+          - {
+              name: "Linux GCC",
+              os: "ubuntu-latest",
+              flags: "-GNinja"
+          }
+          - {
+              name: "Linux Clang",
+              os: "ubuntu-latest",
+              flags: "-DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -GNinja"
+          }
+          - {
+              name: "MacOS",
+              os: "macos-11",
+              flags: "-GNinja"
+          }
+          - {
+              name: "MacOS Xcode",
+              os: "macos-11",
+              flags: "-GXcode"
+          }
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Install Linux Dependencies
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install cmake ninja-build python3 xorg-dev libgl1-mesa-dev
+
+      - name: Install MacOS Dependencies
+        if: runner.os == 'macOS'
+        run: |
+          brew update
+          brew install cmake ninja python3
+
+      - name: Generate Loader
+        run: python3 gengl.py -e arb ext khr ovr nv amd intel mesa
+
+      - name: Configure CMake
+        shell: bash
+        run: cmake -B build -DCMAKE_BUILD_TYPE="Release" ${{matrix.platform.flags}}
+
+      - name: Build
+        shell: bash
+        run: cmake --build build
+  format:
+    name: Formatting Check
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        path:
+          - check: 'src'
+            exclude: ''
+          - check: 'include'
+            exclude: '(GL|KHR)'
+          - check: 'examples'
+            exclude: ''
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run clang-format style check
+        uses: jidicula/clang-format-action@v4.10.2
+        with:
+          clang-format-version: '14'
+          check-path: ${{ matrix.path['check'] }}
+          exclude-regex: ${{ matrix.path['exclude'] }}
