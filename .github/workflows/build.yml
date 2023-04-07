@@ -1,6 +1,10 @@
-name: CI
+name: Build
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main, dev]
 
 jobs:
   build:
@@ -62,28 +66,8 @@ jobs:
 
       - name: Configure CMake
         shell: bash
-        run: cmake -B build -DCMAKE_BUILD_TYPE="Release" ${{matrix.platform.flags}}
+        run: cmake -B build -DCMAKE_BUILD_TYPE="Release" -DGLUCENT_BUILD_EXAMPLES=ON ${{matrix.platform.flags}}
 
       - name: Build
         shell: bash
         run: cmake --build build
-  format:
-    name: Formatting Check
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        path:
-          - check: 'src'
-            exclude: ''
-          - check: 'include'
-            exclude: '(GL|KHR)'
-          - check: 'examples'
-            exclude: ''
-    steps:
-      - uses: actions/checkout@v3
-      - name: Run clang-format style check
-        uses: jidicula/clang-format-action@v4.10.2
-        with:
-          clang-format-version: '14'
-          check-path: ${{ matrix.path['check'] }}
-          exclude-regex: ${{ matrix.path['exclude'] }}

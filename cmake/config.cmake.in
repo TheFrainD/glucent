@@ -1,0 +1,17 @@
+@PACKAGE_INIT@
+
+include("${CMAKE_CURRENT_LIST_DIR}/glucent-targets.cmake")
+
+set(<library_name>_INCLUDE_DIRS "${CMAKE_INSTALL_PREFIX}/include")
+
+configure_package_config_file(
+    "${CMAKE_CURRENT_LIST_DIR}/glucent-config.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/glucent-config.cmake"
+    INSTALL_DESTINATION lib/cmake/glucent
+    PATH_VARS <library_name>_INCLUDE_DIRS
+)
+
+export(EXPORT glucent_Targets
+    FILE "${CMAKE_CURRENT_BINARY_DIR}/glucent-targets.cmake"
+    NAMESPACE glucent::
+)
