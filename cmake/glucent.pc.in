@@ -5,8 +5,9 @@ libdir=@CMAKE_INSTALL_FULL_LIBDIR@
 
 Name: glucent
 Description: A simple cross-platform OpenGL core profile loader and wrapper
-Version: @GLUCENT_VERSION@
-Requires.private: @GLUCENT_PKG_CONFIG_REQUIRES_PRIVATE@
+Version: @PROJECT_VERSION@
+URL: https://github.com/TheFrainD/glucent/
+Requires.private:
 Libs: -L${libdir} -l@GLUCENT_LIB_NAME@
-Libs.private: @GLUCENT_PKG_CONFIG_LIBS_PRIVATE@
+Libs.private:
 Cflags: -I${includedir}

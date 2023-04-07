@@ -23,11 +23,6 @@ target_include_directories(glucent PUBLIC
         "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>"
         "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>")
 
-set(GLFW_PKG_CONFIG_REQUIRES_PRIVATE "${deps}" CACHE INTERNAL
-        "GLFW pkg-config Requires.private")
-set(GLFW_PKG_CONFIG_LIBS_PRIVATE "${libs}" CACHE INTERNAL
-        "GLFW pkg-config Libs.private")
-
 configure_file(${PROJECT_SOURCE_DIR}/cmake/glucent.pc.in glucent.pc @ONLY)
 
 if (GLUCENT_INSTALL)
